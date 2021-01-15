@@ -1,21 +1,14 @@
 require_relative './action_utils'
+require_relative './bundler_utils'
 require_relative './git_utils'
+require_relative './github_release'
+require_relative './version_diff'
 
-if ENV['VERSION_CHANGED'] != 'true'
-  output('conclusion' => 'skipped')
-  exit(0)
-end
+version_diff = VersionDiff.load!
+output('version' => version_diff.current_version)
+exit_with_output('conclusion' => 'skipped') unless version_diff.new_version?
 
-def release_gem
-  as_git_user(name: 'github-actions', email: 'github-actions@user.noreply.github.com') do
-    system('bundle exec rake release')
-  end
-end
+# release_gem || exit_with_error('Release failed')
 
-system('bundle install --jobs=4 --retry=3')
-
-if release_gem
-  output('conclusion' => 'success')
-else
-  exit_with_error('Release failed')
-end
+release = GitHubRelease.create!(version_diff)
+output('conclusion' => 'success', 'release-id' => release.id)

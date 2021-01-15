@@ -2,25 +2,21 @@ name: Release Gem
 description: Release a Ruby gem when the version changes.
 
 outputs:
-  changes:
-    description: Path to changes for the current version from CHANGELOG.md
-    value: ${{ steps.get-version-info.outputs.changes }}
   conclusion:
     description: Indicates if the gem was released or not
     value: ${{ steps.run-release.outputs.conclusion }}
+  release-id:
+    description: The id of the GitHub release
+    value: ${{ steps.run-release.outputs.release-id }}
   version:
     description: The version of the gem
-    value: ${{ steps.get-version-info.outputs.current-version }}
+    value: ${{ steps.run-release.outputs.version }}
 
 runs:
   using: composite
   steps:
-    - id: get-version-info
-      run: ruby ${{ github.action_path }}/get_version_info.rb
-      shell: bash
-
     - id: run-release
-      run: ruby ${{ github.action_path }}/release.rb
+      run: |
+        gem install rest-client --no-document
+        ruby ${{ github.action_path }}/release.rb
       shell: bash
-      env:
-        VERSION_CHANGED: ${{ steps.get-version-info.outputs.version-changed }}
