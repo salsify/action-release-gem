@@ -8,7 +8,9 @@ version_diff = VersionDiff.load!
 output('version' => version_diff.current_version)
 exit_with_output('conclusion' => 'skipped') unless version_diff.new_version?
 
-# release_gem || exit_with_error('Release failed')
+with_gem_auth(version_diff.private_gem?) do
+  release_gem || exit_with_error('Release failed')
+end
 
 release = GitHubRelease.create!(version_diff)
 output('conclusion' => 'success', 'release-id' => release.id)

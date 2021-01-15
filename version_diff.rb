@@ -50,7 +50,7 @@ class VersionDiff
     previous_version != current_version
   end
 
-  def private?
+  def private_gem?
     @gemspec.metadata['allowed_push_host'] == 'https://gems.salsify.com'
   end
 
