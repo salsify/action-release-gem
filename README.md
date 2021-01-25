@@ -22,29 +22,22 @@ jobs:
 
       - name: Release Gem
         id: release-gem
-        uses: @salsify/release-gem@v1
-
-      - name: Create Release
-        id: create-release
-        if: steps.release-gem.outputs.conclusion == 'success'
-        uses: actions/create-release@v1
-        with:
-          tag_name: v${{ steps.release-gem.outputs.version }}
-          release_name: v${{ steps.release-gem.outputs.version }}
-          body_path: ${{ steps.release-gem.outputs.changes }}
-          draft: false
-          prerelease: false
+        uses: erikkessler1/action-release-gem@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARTIFACTORY_AUTH_STRING: ${{ secrets.ARTIFACTORY_AUTH_STRING }}
 ```
 
 _Note: since this action examines your git history to detect changes, you must set a `fetch-depth` of at least 2 with
 `actions/checkout` for that history to be present._
 
-_Note: this will release the gem via `bundle exec rake release`, so your environment must have any necessary secrets/credentials setup._
+### Environment Variables
+
+- `GITHUB_TOKEN` (required): Used to create the GitHub release
+- `ARTIFACTORY_AUTH_STRING` (required for private gems): Used to authenticate with gems.salsify.com
 
 ### Outputs
 
-- `changes`: Path to changes for the current version from CHANGELOG.md
-- `conclusion`: Indicates if the gem was released or not (values: 'success', 'success')
+- `conclusion`: Indicates if the gem was released or not (values: 'success', 'skipped')
+- `release-id`: The id of the GitHub release
 - `version`: The version of the gem
