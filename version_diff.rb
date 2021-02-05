@@ -63,7 +63,7 @@ class VersionDiff
     end
 
     changelog = File.read('CHANGELOG.md')
-    changes_regex = /^## [v|\[]?#{Regexp.escape(version.to_s)}.*?\R(.*?)^##/m
+    changes_regex = /^## [v|\[]?#{Regexp.escape(version.to_s)}.*?\R(.*?)^## /m
     changelog.match(changes_regex)&.[](1)&.chomp
   end
 end
