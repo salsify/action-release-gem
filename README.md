@@ -22,7 +22,7 @@ jobs:
 
       - name: Release Gem
         id: release-gem
-        uses: erikkessler1/action-release-gem@v1
+        uses: salsify/action-release-gem@v1.1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ARTIFACTORY_AUTH_STRING: ${{ secrets.ARTIFACTORY_AUTH_STRING }}
