@@ -35,6 +35,7 @@ _Note: since this action examines your git history to detect changes, you must s
 
 - `GITHUB_TOKEN` (required): Used to create the GitHub release
 - `ARTIFACTORY_AUTH_STRING` (required for private gems): Used to authenticate with gems.salsify.com
+- `RUBYGEMS_API_KEY` (required for public gems): Used to authenticate with rubygems.org
 
 ### Outputs
 
