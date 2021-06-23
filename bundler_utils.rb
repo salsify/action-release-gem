@@ -27,7 +27,7 @@ def with_gems_salsify_auth
     api_key = RestClient.get("https://#{auth}@gems.salsify.com/api/v1/api_key").body
     File.write(creds_file, { gems_salsify_com: api_key }.to_yaml)
 
-    system('bundle config gems.salsify.com #{auth}', exception: true)
+    system("bundle config gems.salsify.com #{auth}", exception: true)
 
     yield
   ensure
