@@ -2,9 +2,13 @@ class VersionDiff
   class << self
     def load!
       gemspec = load_gemspec
+      puts "Loaded current gemspec with version #{gemspec.version}."
+
       previous_gemspec = git_checkout('HEAD~1') do
         reload_gem(gemspec.name)
-        load_gemspec
+        load_gemspec.tap do |prev|
+          puts "Loaded previous gemspec with versin #{prev.version}."
+        end
       end
 
       new(gemspec, previous_gemspec)
@@ -21,10 +25,12 @@ class VersionDiff
     end
 
     def reload_gem(name)
+      puts "Reloading '#{name}'..."
+
       $LOADED_FEATURES.grep(/#{Regexp.escape(name)}/) do |path|
         load(path)
       rescue LoadError
-        # Ignore
+        warn "LoadError while reloading #{path}, continuing..."
       end
     end
   end
