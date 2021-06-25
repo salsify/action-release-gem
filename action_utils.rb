@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def log_warning(message)
   puts "::warning::#{message}"
 end

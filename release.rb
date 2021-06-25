@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative './action_utils'
 require_relative './bundler_utils'
 require_relative './git_utils'

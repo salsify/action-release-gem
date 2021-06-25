@@ -1,20 +1,22 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 require 'rest-client'
 require 'yaml'
 
 def with_gem_auth(is_private, &block)
   if is_private
-    puts "Using gems.salsify.com authentication."
+    puts 'Using gems.salsify.com authentication.'
     with_gems_salsify_auth(&block)
   else
-    puts "Using rubygems.org authentication."
+    puts 'Using rubygems.org authentication.'
     with_ruby_gems_auth(&block)
   end
 end
 
 def with_ruby_gems_auth
   with_credentials_file do |creds_file|
-    api_key = ENV['RUBYGEMS_API_KEY'] or exit_with_error("RUBYGEMS_API_KEY not set!")
+    api_key = ENV['RUBYGEMS_API_KEY'] or exit_with_error('RUBYGEMS_API_KEY not set!')
     File.write(creds_file, { rubygems_api_key: api_key }.to_yaml)
 
     yield
@@ -23,7 +25,7 @@ end
 
 def with_gems_salsify_auth
   with_credentials_file do |creds_file|
-    auth = ENV['ARTIFACTORY_AUTH_STRING'] or exit_with_error("ARTIFACTORY_AUTH_STRING not set!")
+    auth = ENV['ARTIFACTORY_AUTH_STRING'] or exit_with_error('ARTIFACTORY_AUTH_STRING not set!')
     api_key = RestClient.get("https://#{auth}@gems.salsify.com/api/v1/api_key").body
     File.write(creds_file, { gems_salsify_com: api_key }.to_yaml)
 

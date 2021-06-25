@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VersionDiff
   class << self
     def load!
