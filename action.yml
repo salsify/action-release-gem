@@ -17,6 +17,7 @@ runs:
   steps:
     - id: run-release
       run: |
+        export ACTION_ENV=production
         gem install rest-client --no-document
         ruby ${{ github.action_path }}/release.rb
       shell: bash
