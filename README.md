@@ -42,3 +42,14 @@ _Note: since this action examines your git history to detect changes, you must s
 - `conclusion`: Indicates if the gem was released or not (values: 'success', 'skipped')
 - `release-id`: The id of the GitHub release
 - `version`: The version of the gem
+
+## Development
+
+To run locally you can create a pre-release in a gem and run `release.rb`. For example:
+
+- `cd test_gem`
+- Change the version (it is best to use a pre-release like `0.1.0.action-test.1`)
+- Run the release action: `ruby ~/action-release-gem/release.rb`
+
+_Note: Unless the `ACTION_ENV` environment variable is set to "production", the action will *not* try to update your
+gem/bundler configuration but it *will* try to release the gem if the correct secrets are present._
