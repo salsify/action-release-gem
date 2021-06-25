@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.configure do |config|
+require 'webmock/rspec'
 
+RSpec.configure do |config|
+  config.before(:suite) do
+    WebMock.disable_net_connect!
+  end
 end

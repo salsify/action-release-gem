@@ -11,6 +11,8 @@ group :development, :test do
 end
 
 group :test do
+  gem 'rest-client'
   gem 'rspec'
   gem 'rspec_junit_formatter'
+  gem 'webmock'
 end
