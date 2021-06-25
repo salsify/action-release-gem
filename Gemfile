@@ -9,3 +9,8 @@ ruby '2.6.5'
 group :development, :test do
   gem 'salsify_rubocop'
 end
+
+group :test do
+  gem 'rspec'
+  gem 'rspec_junit_formatter'
+end
