@@ -1,0 +1,23 @@
+version: 2.1
+
+jobs:
+  lint:
+    docker:
+      - image: salsify/ruby_ci:2.6.5
+    working_directory: ~/action-release-gem
+    steps:
+      - checkout
+      - run:
+          name: Install Gems
+          command: |
+            gem install bundler --version 2.2.5
+            bundle install --jobs=4 --retry=3
+      - run:
+          name: Run Rubocop
+          command: |
+            bundle exec rubocop --config .rubocop.yml
+
+workflows:
+  build:
+    jobs:
+      - lint
