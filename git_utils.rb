@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def git(command, *args)
   quoted_args = args.map { |arg| "\"#{arg}\"" }
   `git #{command} #{quoted_args.join(' ')}`.chomp
