@@ -11,23 +11,16 @@ describe "release.rb" do
       ENV[key] = value
     end
 
-    error = nil
-    output = capture_stdout do
-      load "#{action_path}/release.rb"
-    rescue Exception => e # rubocop:disable Lint/RescueException rescue exits
-      error = e
-    end
-
-    [output, error]
+    load "#{action_path}/release.rb"
+  rescue SystemExit # avoid exiting rspec entirely
+    nil
   end
 
   context "with no version change" do
     it "skips the release" do
       with_test_env do
         in_test_gem do
-          output, = run_release
-
-          expect(output).to eq(<<~TXT)
+          expect { run_release }.to output(<<~TXT).to_stdout
             Loaded current gemspec with version 0.1.0.test.1.
             Reloading 'test_gem'...
             Loaded previous gemspec with versin 0.1.0.test.1.
@@ -77,16 +70,14 @@ describe "release.rb" do
             }.to_json
           )
 
-          output, error = run_release(
-            'RUBYGEMS_API_KEY' => 'rubYgems_key',
-            'GITHUB_SHA' => git_sha,
-            'GITHUB_REPOSITORY' => 'test_gem',
-            'GITHUB_TOKEN' => 'github_token'
-          )
-
-          expect(File.read('release_status.txt')).to eq('RELEASED')
-          expect(error).to be_nil
-          expect(output).to eq(<<~TXT)
+          expect do
+            run_release(
+              'RUBYGEMS_API_KEY' => 'rubYgems_key',
+              'GITHUB_SHA' => git_sha,
+              'GITHUB_REPOSITORY' => 'test_gem',
+              'GITHUB_TOKEN' => 'github_token'
+            )
+          end.to output(<<~TXT).to_stdout
             Loaded current gemspec with version 0.1.0.test.2.
             Reloading 'test_gem'...
             Loaded previous gemspec with versin 0.1.0.test.1.
@@ -95,6 +86,7 @@ describe "release.rb" do
             ::set-output name=conclusion::success
             ::set-output name=release-id::1
           TXT
+          expect(File.read('release_status.txt')).to eq('RELEASED')
         end
       end
     end
@@ -110,9 +102,9 @@ describe "release.rb" do
   def in_test_gem
     Dir.mktmpdir do |dir|
       Dir.chdir(dir) do
-        `git init`
-        `git config user.email "tester@test.com"`
-        `git config user.name "Tester"`
+        sh('git init')
+        sh('git config user.email "tester@test.com"')
+        sh('git config user.name "Tester"')
 
         FileUtils.mkdir_p("#{dir}/lib/test_gem")
         File.write('test_gem.gemspec', <<~RUBY)
@@ -141,19 +133,14 @@ describe "release.rb" do
           end
         RUBY
 
-        `git add . && git commit -m 'Initial commit'`
+        sh('git add . && git commit -m "Initial commit"')
 
         yield
       end
     end
   end
 
-  def capture_stdout
-    old = $stdout
-    $stdout = output = StringIO.new
-    yield
-    output.string
-  ensure
-    $stdout = old
+  def sh(command)
+    system(command, exception: true)
   end
 end
